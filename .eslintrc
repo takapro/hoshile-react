@@ -23,6 +23,7 @@
         "singleline": { "delimiter": "comma", "requireLast": false }
       }
     ],
+    "react/prop-types": "off",
     "semi": "error",
     "eqeqeq": "error",
     "no-console": "warn"

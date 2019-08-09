@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Header from './Header';
-import Footer from './Footer';
+import Header from './client/Header';
+import ProductList from './client/ProductList';
+import Footer from './client/Footer';
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Header />
       <Switch>
-        <Route exact path='/'>Home</Route>
+        <Route exact path='/' component={ProductList} />
         <Route path='/about'>About</Route>
         <Route path='/login'>Log in</Route>
         <Route path='/signup'>Sign up</Route>
