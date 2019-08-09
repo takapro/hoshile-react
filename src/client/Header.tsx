@@ -1,19 +1,19 @@
 import React from 'react';
 import { Container, Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
-import { STORE_NAME } from '../config';
+import { SITE_NAME } from '../config';
 
 const Header: React.FC = () => {
   return (
     <>
       <header className='py-4'>
         <Container className='text-center'>
-          <h1><Link to='/'>{STORE_NAME}</Link></h1>
+          <h1><Link to='/'>{SITE_NAME}</Link></h1>
         </Container>
       </header>
       <Navbar expand='md' variant='dark' bg='dark' sticky='top'>
         <Container>
-          <Navbar.Brand as={Link} to='/'>{STORE_NAME}</Navbar.Brand>
+          <Navbar.Brand as={Link} to='/'>{SITE_NAME}</Navbar.Brand>
           <Navbar.Toggle aria-controls='navbar-content' aria-label='Toggle navigation' />
           <Navbar.Collapse id='navbar-content'>
             <Nav className='mr-auto'>

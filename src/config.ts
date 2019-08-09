@@ -1,4 +1,4 @@
-export const STORE_NAME = 'HoshiLe’s Store';
+export const SITE_NAME = 'HoshiLe’s Store';
 
 //const API_BASE = 'https://hoshile.herokuapp.com/';
 const API_BASE = 'http://localhost/HoshiLe/';

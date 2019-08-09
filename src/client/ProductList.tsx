@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Alert, Row, Col, Card, Image, Button } from 'react-bootstrap';
-import { PRODUCT_API } from '../config';
+import { Link } from 'react-router-dom';
+import { SITE_NAME, PRODUCT_API } from '../config';
 import { fetchUrl, FetchState } from '../util/fetchUrl';
 import Product from '../entity/Product';
 
@@ -14,9 +15,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             <Card.Subtitle className='mb-1'>{product.brand}</Card.Subtitle>
             <Card.Title className='mb-0'>{product.name}</Card.Title>
           </div>
-          <Button variant='secondary' className='stretched-link' onClick={() => alert('Show detail')}>
-            Detail
-          </Button>
+          <Link to={'/product/' + product.id}>
+            <Button variant='secondary' className='stretched-link'>Detail</Button>
+          </Link>
         </Card.Body>
       </Card>
     </Col>
@@ -26,6 +27,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState('LOADING' as FetchState<Product[]>);
   useEffect(() => fetchUrl('GET', PRODUCT_API, null, setProducts), []);
+  useEffect(() => { document.title = SITE_NAME; }, []);
 
   return (
     <main className='py-4'>
