@@ -1,9 +1,9 @@
 import React from 'react';
 import { Alert, Spinner } from 'react-bootstrap';
-import { LOADING } from '../util/fetchUrl';
+import { LOADING, FAILED } from '../util/fetchUrl';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const FetchAlert = (message: string) => (state: 'LOADING' | 'FAILED') => {
+const FetchAlert = (message: string) => (state: typeof LOADING | typeof FAILED) => {
   if (state === LOADING) {
     return (
       <Alert variant='light' className='d-flex align-items-center'>

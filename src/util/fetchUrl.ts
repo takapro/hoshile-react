@@ -1,13 +1,13 @@
-export type FetchState<T> = 'LOADING' | 'FAILED' | T;
 export const LOADING: 'LOADING' = 'LOADING';
 export const FAILED: 'FAILED' = 'FAILED';
+export type FetchState<T> = typeof LOADING | typeof FAILED | T;
 
 export const fetchUrl = <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
-  body: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  body: { [key: string]: any } | null, // eslint-disable-line @typescript-eslint/no-explicit-any
   setState: (state: FetchState<T>) => void
-): void => {
+): () => void => {
   let init: RequestInit | undefined;
   if (method === 'GET') {
     if (body) {
@@ -21,6 +21,7 @@ export const fetchUrl = <T>(
     }
   }
 
+  let alive = true;
   fetch(url, init)
     .then(response => {
       if (response.ok) {
@@ -29,14 +30,16 @@ export const fetchUrl = <T>(
         throw Error();
       }
     })
-    .then(json => setState(json))
-    .catch(() => setState(FAILED));
+    .then(json => alive && setState(json))
+    .catch(() => alive && setState(FAILED));
+
+  return () => alive = false;
 };
 
 export const fetchCase = <T, U = void>(
   state: FetchState<T>,
   success: (state: T) => U,
-  failure?: (state: 'LOADING' | 'FAILED') => U
+  failure?: (state: typeof LOADING | typeof FAILED) => U
 ): U | undefined => {
   if (state !== LOADING && state !== FAILED) {
     return success(state);
