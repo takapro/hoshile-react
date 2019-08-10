@@ -2,8 +2,12 @@ import React from 'react';
 import { Container, Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { Link, NavLink } from 'react-router-dom';
 import { SITE_NAME } from '../config';
+import { useSessionState, useSessionDispatch, LOGGED_OUT } from '../Session';
 
 const Header: React.FC = () => {
+  const { user } = useSessionState();
+  const dispatch = useSessionDispatch();
+
   return (
     <>
       <header className='py-4'>
@@ -21,14 +25,20 @@ const Header: React.FC = () => {
               <Nav.Link as={NavLink} to='/about'>About</Nav.Link>
             </Nav>
             <Nav>
-              <Nav.Link as={NavLink} to='/login'>Log in</Nav.Link>
-              <Nav.Link as={NavLink} to='/signup'>Sign up</Nav.Link>
-              <NavDropdown id='navbar-dropdown' title='{username}'>
-                <NavDropdown.Item as={Link} to='/profile'>Profile</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to='/orderList'>Order History</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={() => alert('Logged out!')}>Log out</NavDropdown.Item>
-              </NavDropdown>
+              {
+                user ?
+                  <NavDropdown id='navbar-dropdown' title={user.name}>
+                    <NavDropdown.Item as={Link} to='/profile'>Profile</NavDropdown.Item>
+                    <NavDropdown.Item as={Link} to='/orderList'>Order History</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={() => dispatch({ type: LOGGED_OUT })}>Log out</NavDropdown.Item>
+                  </NavDropdown>
+                  :
+                  <>
+                    <Nav.Link as={NavLink} to='/login'>Log in</Nav.Link>
+                    <Nav.Link as={NavLink} to='/signup'>Sign up</Nav.Link>
+                  </>
+              }
               <Nav.Item className='ml-2'>
                 <Link to='/shoppingCart'>
                   <Button variant='warning'>Cart</Button>
