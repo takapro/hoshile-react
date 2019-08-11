@@ -4,6 +4,6 @@ interface Product {
   brand: string;
   price: number | string;
   imageUrl: string;
-};
+}
 
 export default Product;

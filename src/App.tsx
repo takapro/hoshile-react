@@ -7,6 +7,8 @@ import ProductDetail from './client/ProductDetail';
 import UserLogin from './client/UserLogin';
 import UserSignup from './client/UserSignup';
 import UserProfile from './client/UserProfile';
+import OrderList from './client/OrderList';
+import OrderDetail from './client/OrderDetail';
 import ShoppingCart from './client/ShoppingCart';
 import Footer from './client/Footer';
 
@@ -22,7 +24,8 @@ const App: React.FC = () => {
           <Route path='/login' component={UserLogin} />
           <Route path='/signup' component={UserSignup} />
           <Route path='/profile' component={UserProfile} />
-          <Route path='/orderList'>Order History</Route>
+          <Route path='/orderList' component={OrderList} />
+          <Route path='/order/:id' component={OrderDetail} />
           <Route path='/shoppingCart' component={ShoppingCart} />
           <Route>Unknown Page</Route>
         </Switch>

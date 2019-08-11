@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { History } from 'history';
-import { Container, Table, Image, Button } from 'react-bootstrap';
-import { PRODUCT_API } from '../config';
+import { Container, Table, Image, Button, Spinner } from 'react-bootstrap';
+import { PRODUCT_API, ORDER_API } from '../config';
 import { useSessionState, useSessionDispatch, MERGE_CART } from '../Session';
 import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
-import { CartEntry, joinProducts } from '../entity/CartEntry';
+import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
+import { DetailEntry, joinProducts, calcPrice, calcTotalPrice } from '../entity/CartEntry';
 import Product from '../entity/Product';
 import FetchAlert from './FetchAlert';
 
-const CartRow: React.FC<{ product: Product, quantity: number }> = ({ product, quantity }) => {
+const CartRow: React.FC<{ detail: DetailEntry }> = ({ detail }) => {
+  const { product, quantity } = detail;
   const sessionDispatch = useSessionDispatch();
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -30,15 +32,12 @@ const CartRow: React.FC<{ product: Product, quantity: number }> = ({ product, qu
         <Button variant='light' size='sm' onClick={updateQuantity(1)}>+</Button>
       </td>
       <td>${product.price}</td>
-      <td>${parseFloat('' + product.price) * quantity}</td>
+      <td>${calcPrice(detail)}</td>
     </tr>
   );
 };
 
-const CartTable: React.FC<{ cart: CartEntry[], products: Product[] }> = ({ cart, products }) => {
-  const joinedCart = joinProducts(cart, products);
-  const totalPrice = joinedCart.reduce((acc, each) => acc + parseFloat('' + each.product.price) * each.quantity, 0);
-
+const CartTable: React.FC<{ details: DetailEntry[] }> = ({ details }) => {
   return (
     <Table>
       <thead>
@@ -53,14 +52,14 @@ const CartTable: React.FC<{ cart: CartEntry[], products: Product[] }> = ({ cart,
       </thead>
       <tbody>
         {
-          joinedCart.map(each => <CartRow key={each.product.id} product={each.product} quantity={each.quantity} />)
+          details.map(each => <CartRow key={each.product.id} detail={each} />)
         }
       </tbody>
       <tfoot>
         <tr>
           <td colSpan={4}></td>
           <th>Total</th>
-          <td>${totalPrice}</td>
+          <td>${calcTotalPrice(details)}</td>
         </tr>
       </tfoot>
     </Table>
@@ -70,12 +69,24 @@ const CartTable: React.FC<{ cart: CartEntry[], products: Product[] }> = ({ cart,
 const ShoppingCart: React.FC<{ history: History }> = ({ history }) => {
   const { user, shoppingCart } = useSessionState();
   const [products, setProducts] = useState(LOADING as FetchState<Product[]>);
+  const [purchaseState, purchaseDispatch] = useFetchReducer();
 
   const disabled = user !== null && shoppingCart.length === 0;
-  const onClick = user ? () => alert('purchasing') : () => history.push('/login');
+  const onClick = user ? () => purchaseDispatch(START) : () => history.push('/login');
 
   useEffect(() => documentTitle('Shopping Cart'), []);
-  useEffect(() => fetchUrl('GET', PRODUCT_API, { ids: shoppingCart.map(entry => entry.productId).join(',') }, setProducts), []);
+  useEffect(() => {
+    const ids = shoppingCart.map(entry => entry.productId).join(',');
+    fetchUrl('GET', PRODUCT_API, { ids }, setProducts);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (user && purchaseState.started) {
+      const body = { userId: user.id, details: shoppingCart };
+      return fetchUrl('POST', ORDER_API, body, setFetchResult(purchaseDispatch, (orderId: number) => {
+        history.push('/order/' + orderId);
+      }));
+    }
+  }, [purchaseState.started]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main className='py-4'>
@@ -84,9 +95,12 @@ const ShoppingCart: React.FC<{ history: History }> = ({ history }) => {
           fetchCase(products, products => (
             <>
               <h3 className='mb-3'>Shopping Cart</h3>
-              <CartTable cart={shoppingCart} products={products} />
+              <CartTable details={joinProducts(shoppingCart, products)} />
               <div className='text-center'>
                 <Button variant='primary' size='lg' className='w-25' disabled={disabled} onClick={onClick}>
+                  {
+                    purchaseState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
+                  }
                   { user ? 'Purchase' : 'Please Log in' }
                 </Button>
               </div>

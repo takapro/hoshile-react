@@ -4,11 +4,11 @@ import { History } from 'history';
 import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
 import { USER_API } from '../config';
 import { useSessionState, useSessionDispatch, LOGGED_IN } from '../Session';
-import User from '../entity/User';
 import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
 import { fetchUrl, fetchCase, FetchState, LOADING, FAILED } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
+import User from '../entity/User';
 import FetchAlert from './FetchAlert';
 
 const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user }) => {
