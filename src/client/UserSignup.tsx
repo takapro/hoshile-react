@@ -4,7 +4,8 @@ import { Link, withRouter } from 'react-router-dom';
 import { History } from 'history';
 import { USER_API } from '../config';
 import { useSessionDispatch, LOGGED_IN } from '../Session';
-import { FetchState, LOADING, FAILED, fetchUrl } from '../util/fetchUrl';
+import { fetchUrl } from '../util/fetchUrl';
+import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
 
@@ -13,27 +14,20 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
-  const [signupPressed, setSignupPressed] = useState(false);
-  const [signupState, setSignupState] = useState(LOADING as FetchState<number>);
+  const [signupState, signupDispatch] = useFetchReducer();
   const dispatch = useSessionDispatch();
 
-  const signupDisabled = signupPressed || name === '' || email === '' || password1 === '' || password1 !== password2;
-  const setSignupResult = (state: typeof FAILED | number): void => {
-    if (state === FAILED) {
-      setSignupState(state);
-      setSignupPressed(false);
-    } else {
-      dispatch({ type: LOGGED_IN, userId: state as number, userName: name });
-      history.push('/');
-    }
-  };
+  const signupDisabled = signupState.started || name === '' || email === '' || password1 === '' || password1 !== password2;
 
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
-    if (signupPressed) {
-      return fetchUrl('POST', USER_API, { name, email, password: password1 }, setSignupResult);
+    if (signupState.started) {
+      return fetchUrl('POST', USER_API, { name, email, password: password1 }, setFetchResult(signupDispatch, (userId: number) => {
+        dispatch({ type: LOGGED_IN, userId, userName: name });
+        history.push('/');
+      }));
     }
-  }, [signupPressed]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [signupState.started]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main className='py-4'>
@@ -42,7 +36,7 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
           <Col md={6}>
             <h3 className='mb-3'>Please Sign up, or <Link to='/login'>Log in</Link></h3>
             {
-              signupState === FAILED && <Alert variant='danger'>Signup failed.</Alert>
+              signupState.failed && <Alert variant='danger'>Signup failed.</Alert>
             }
             <Form>
               <Form.Group>
@@ -61,9 +55,9 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control type='password' value={password2} onChange={valueHandler(setPassword2)} />
               </Form.Group>
-              <Button type='submit' variant='primary' disabled={signupDisabled} onClick={() => setSignupPressed(true)}>
+              <Button type='submit' variant='primary' disabled={signupDisabled} onClick={() => signupDispatch(START)}>
                 {
-                  signupPressed && <Spinner as='span' className='mr-2' animation='border' size='sm' />
+                  signupState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
                 }
                 Sign up
               </Button>

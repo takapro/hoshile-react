@@ -5,34 +5,28 @@ import { History } from 'history';
 import { USER_API } from '../config';
 import { useSessionDispatch, LOGGED_IN } from '../Session';
 import User from '../entity/User';
-import { FetchState, LOADING, FAILED, fetchUrl } from '../util/fetchUrl';
+import { fetchUrl } from '../util/fetchUrl';
+import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
 
 const UserLogin: React.FC<{ history: History }> = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginPressed, setLoginPressed] = useState(false);
-  const [loginState, setLoginState] = useState(LOADING as FetchState<User>);
-  const dispatch = useSessionDispatch();
+  const [loginState, loginDispatch] = useFetchReducer();
+  const sessionDispatch = useSessionDispatch();
 
-  const loginDisabled = loginPressed || email === '' || password === '';
-  const setLoginResult = (state: typeof FAILED | User): void => {
-    if (state === FAILED) {
-      setLoginState(state);
-      setLoginPressed(false);
-    } else {
-      dispatch({ type: LOGGED_IN, userId: state.id as number, userName: state.name });
-      history.push('/');
-    }
-  };
+  const loginDisabled = loginState.started || email === '' || password === '';
 
   useEffect(() => documentTitle('Log in'), []);
   useEffect(() => {
-    if (loginPressed) {
-      return fetchUrl('GET', USER_API, { email, password }, setLoginResult);
+    if (loginState.started) {
+      return fetchUrl('GET', USER_API, { email, password }, setFetchResult(loginDispatch, (user: User) => {
+        sessionDispatch({ type: LOGGED_IN, userId: user.id as number, userName: user.name });
+        history.push('/');
+      }));
     }
-  }, [loginPressed]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loginState.started]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main className='py-4'>
@@ -41,7 +35,7 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
           <Col md={6}>
             <h3 className='mb-3'>Please Log in, or <Link to='/signup'>Sign up</Link></h3>
             {
-              loginState === FAILED && <Alert variant='danger'>Login failed.</Alert>
+              loginState.failed && <Alert variant='danger'>Login failed.</Alert>
             }
             <Form>
               <Form.Group>
@@ -52,9 +46,9 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type='password' value={password} onChange={valueHandler(setPassword)} />
               </Form.Group>
-              <Button type='submit' variant='primary' disabled={loginDisabled} onClick={() => setLoginPressed(true)}>
+              <Button type='submit' variant='primary' disabled={loginDisabled} onClick={() => loginDispatch(START)}>
                 {
-                  loginPressed && <Spinner as='span' className='mr-2' animation='border' size='sm' />
+                  loginState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
                 }
                 Log in
               </Button>
