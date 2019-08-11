@@ -17,12 +17,12 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
   const dispatch = useSessionDispatch();
 
   const loginDisabled = loginPressed || email === '' || password === '';
-  const setLoginResult = (state: FetchState<User>): void => {
-    if (state === LOADING || state === FAILED) {
+  const setLoginResult = (state: typeof FAILED | User): void => {
+    if (state === FAILED) {
       setLoginState(state);
       setLoginPressed(false);
     } else {
-      dispatch({ type: LOGGED_IN, userId: state.id as number, userName: state.name});
+      dispatch({ type: LOGGED_IN, userId: state.id as number, userName: state.name });
       history.push('/');
     }
   };
@@ -52,7 +52,7 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
                 <Form.Label>Password</Form.Label>
                 <Form.Control type='password' value={password} onChange={valueHandler(setPassword)} />
               </Form.Group>
-              <Button variant='primary' type='submit' disabled={loginDisabled} onClick={() => setLoginPressed(true)}>
+              <Button type='submit' variant='primary' disabled={loginDisabled} onClick={() => setLoginPressed(true)}>
                 {
                   loginPressed && <Spinner as='span' className='mr-2' animation='border' size='sm' />
                 }

@@ -6,7 +6,7 @@ export const fetchUrl = <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
   body: { [key: string]: any } | null, // eslint-disable-line @typescript-eslint/no-explicit-any
-  setState: (state: FetchState<T>) => void
+  setState: (state: typeof FAILED | T) => void
 ): () => void => {
   let init: RequestInit | undefined;
   if (method === 'GET') {
@@ -14,11 +14,14 @@ export const fetchUrl = <T>(
       url += '?' + Object.keys(body).map(key => key + '=' + encodeURIComponent(body[key])).join('&');
     }
   } else {
-    if (body) {
-      init = { method, body: JSON.stringify(body) };
-    } else {
-      init = { method };
-    }
+    init = {
+      method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    };
   }
 
   let alive = true;
@@ -30,8 +33,16 @@ export const fetchUrl = <T>(
         throw Error();
       }
     })
-    .then(json => alive && setState(json))
-    .catch(() => alive && setState(FAILED));
+    .then(json => {
+      if (json) {
+        return alive && setState(json);
+      } else {
+        throw Error();
+      }
+    })
+    .catch(ex => {
+      return alive && setState(FAILED);
+    });
 
   return () => alive = false;
 };
