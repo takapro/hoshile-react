@@ -1,12 +1,18 @@
 import React from 'react';
+import { withRouter, Link, NavLink } from 'react-router-dom';
+import { History } from 'history';
 import { Container, Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom';
 import { SITE_NAME } from '../config';
 import { useSessionState, useSessionDispatch, LOGGED_OUT } from '../Session';
 
-const Header: React.FC = () => {
+const Header: React.FC<{ history: History }> = ({ history }) => {
   const { user } = useSessionState();
-  const dispatch = useSessionDispatch();
+  const sessionDispatch = useSessionDispatch();
+
+  const logout = (): void => {
+    sessionDispatch({ type: LOGGED_OUT });
+    history.push('/');
+  };
 
   return (
     <>
@@ -31,7 +37,7 @@ const Header: React.FC = () => {
                     <NavDropdown.Item as={Link} to='/profile'>Profile</NavDropdown.Item>
                     <NavDropdown.Item as={Link} to='/orderList'>Order History</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={() => dispatch({ type: LOGGED_OUT })}>Log out</NavDropdown.Item>
+                    <NavDropdown.Item onClick={logout}>Log out</NavDropdown.Item>
                   </NavDropdown>
                   :
                   <>
@@ -52,4 +58,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default withRouter(Header);

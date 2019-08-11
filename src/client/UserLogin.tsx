@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { History } from 'history';
+import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
 import { USER_API } from '../config';
 import { useSessionDispatch, LOGGED_IN } from '../Session';
 import User from '../entity/User';
-import { fetchUrl } from '../util/fetchUrl';
-import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
+import { fetchUrl } from '../util/fetchUrl';
+import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 
 const UserLogin: React.FC<{ history: History }> = ({ history }) => {
   const [email, setEmail] = useState('');
@@ -22,7 +22,7 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
   useEffect(() => {
     if (loginState.started) {
       return fetchUrl('GET', USER_API, { email, password }, setFetchResult(loginDispatch, (user: User) => {
-        sessionDispatch({ type: LOGGED_IN, userId: user.id as number, userName: user.name });
+        sessionDispatch({ type: LOGGED_IN, userId: user.id, userName: user.name });
         history.push('/');
       }));
     }

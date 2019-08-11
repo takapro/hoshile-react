@@ -3,7 +3,7 @@ import { match } from 'react-router-dom';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { PRODUCT_API } from '../config';
 import { documentTitle } from '../util/documentTitle';
-import { FetchState, LOADING, fetchUrl, fetchCase } from '../util/fetchUrl';
+import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
 import Product from '../entity/Product';
 import FetchAlert from './FetchAlert';
 

@@ -6,6 +6,7 @@ import ProductList from './client/ProductList';
 import ProductDetail from './client/ProductDetail';
 import UserLogin from './client/UserLogin';
 import UserSignup from './client/UserSignup';
+import UserProfile from './client/UserProfile';
 import Footer from './client/Footer';
 
 const App: React.FC = () => {
@@ -19,7 +20,7 @@ const App: React.FC = () => {
           <Route path='/about'>About</Route>
           <Route path='/login' component={UserLogin} />
           <Route path='/signup' component={UserSignup} />
-          <Route path='/profile'>Profile</Route>
+          <Route path='/profile' component={UserProfile} />
           <Route path='/orderList'>Order History</Route>
           <Route path='/shoppingCart'>Shopping Cart</Route>
           <Route>Unknown Page</Route>

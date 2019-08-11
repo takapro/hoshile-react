@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { History } from 'history';
+import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
 import { USER_API } from '../config';
 import { useSessionDispatch, LOGGED_IN } from '../Session';
-import { fetchUrl } from '../util/fetchUrl';
-import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
+import { fetchUrl } from '../util/fetchUrl';
+import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 
 const UserSignup: React.FC<{ history: History }> = ({ history }) => {
   const [name, setName] = useState('');
@@ -15,7 +15,7 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
   const [password1, setPassword1] = useState('');
   const [password2, setPassword2] = useState('');
   const [signupState, signupDispatch] = useFetchReducer();
-  const dispatch = useSessionDispatch();
+  const sessionDispatch = useSessionDispatch();
 
   const signupDisabled = signupState.started || name === '' || email === '' || password1 === '' || password1 !== password2;
 
@@ -23,7 +23,7 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
   useEffect(() => {
     if (signupState.started) {
       return fetchUrl('POST', USER_API, { name, email, password: password1 }, setFetchResult(signupDispatch, (userId: number) => {
-        dispatch({ type: LOGGED_IN, userId, userName: name });
+        sessionDispatch({ type: LOGGED_IN, userId, userName: name });
         history.push('/');
       }));
     }
