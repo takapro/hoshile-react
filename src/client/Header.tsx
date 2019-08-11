@@ -6,7 +6,7 @@ import { SITE_NAME } from '../config';
 import { useSessionState, useSessionDispatch, LOGGED_OUT } from '../Session';
 
 const Header: React.FC<{ history: History }> = ({ history }) => {
-  const { user } = useSessionState();
+  const { user, shoppingCart } = useSessionState();
   const sessionDispatch = useSessionDispatch();
 
   const logout = (): void => {
@@ -47,7 +47,11 @@ const Header: React.FC<{ history: History }> = ({ history }) => {
               }
               <Nav.Item className='ml-2'>
                 <Link to='/shoppingCart'>
-                  <Button variant='warning'>Cart</Button>
+                  {
+                    shoppingCart.length > 0 ?
+                      <Button variant='warning'>Cart</Button> :
+                      <Button variant='secondary' className='text-white-50'>Cart</Button>
+                  }
                 </Link>
               </Nav.Item>
             </Nav>

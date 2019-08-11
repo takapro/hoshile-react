@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { match } from 'react-router-dom';
+import { withRouter, match } from 'react-router-dom';
+import { History } from 'history';
 import { Container, Row, Col, Image, Button } from 'react-bootstrap';
 import { PRODUCT_API } from '../config';
+import { useSessionDispatch, MERGE_CART } from '../Session';
 import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
 import Product from '../entity/Product';
 import FetchAlert from './FetchAlert';
 
-const ProductDetail: React.FC<{ match: match<{ id: string }> }> = ({ match }) => {
+const ProductDetail: React.FC<{ match: match<{ id: string }>, history: History }> = ({ match, history }) => {
+  const sessionDispatch = useSessionDispatch();
   const [product, setProduct] = useState(LOADING as FetchState<Product>);
-  useEffect(() => fetchUrl('GET', PRODUCT_API, { id: match.params.id }, setProduct), [match.params.id]);
+
   useEffect(() => fetchCase(product, product => documentTitle(product.name)), [product]);
+  useEffect(() => fetchUrl('GET', PRODUCT_API, { id: match.params.id }, setProduct), [match.params.id]);
+
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const addToCart = (product: Product) => () => {
+    sessionDispatch({ type: MERGE_CART, cart: [{ productId: product.id, quantity: 1 }] });
+    history.push('/shoppingCart');
+  };
 
   return (
     <main className='py-4'>
@@ -25,7 +35,7 @@ const ProductDetail: React.FC<{ match: match<{ id: string }> }> = ({ match }) =>
                 <h6>{product.brand}</h6>
                 <h4>{product.name}</h4>
                 <p>Price: ${product.price}</p>
-                <Button variant='primary' onClick={() => alert('Adding to Cart')}>Add to Cart</Button>
+                <Button variant='primary' onClick={addToCart(product)}>Add to Cart</Button>
               </Col>
             </Row>
           ), FetchAlert('Sorry, failed to fetch product detail.'))
@@ -35,4 +45,4 @@ const ProductDetail: React.FC<{ match: match<{ id: string }> }> = ({ match }) =>
   );
 };
 
-export default ProductDetail;
+export default withRouter(ProductDetail);

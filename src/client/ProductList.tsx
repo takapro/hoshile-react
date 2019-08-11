@@ -28,8 +28,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState(LOADING as FetchState<Product[]>);
-  useEffect(() => fetchUrl('GET', PRODUCT_API, null, setProducts), []);
+
   useEffect(() => documentTitle(), []);
+  useEffect(() => fetchUrl('GET', PRODUCT_API, null, setProducts), []);
 
   return (
     <main className='py-4'>

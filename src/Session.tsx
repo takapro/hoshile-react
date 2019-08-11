@@ -1,23 +1,30 @@
 import React, { createContext, useContext, useReducer } from 'react';
 import User from './entity/User';
+import { CartEntry, mergeCart } from './entity/CartEntry';
 
 // action
 
 export const LOGGED_IN: 'LOGGED_IN' = 'LOGGED_IN';
 export const LOGGED_OUT: 'LOGGED_OUT' = 'LOGGED_OUT';
+export const MERGE_CART: 'MERGE_CART' = 'MERGE_CART';
+export const CLEAR_CART: 'CLEAR_CART' = 'CLEAR_CART';
 
 type Action =
   { type: typeof LOGGED_IN, userId: number | string, userName: string } |
-  { type: typeof LOGGED_OUT };
+  { type: typeof LOGGED_OUT } |
+  { type: typeof MERGE_CART, cart: CartEntry[] } |
+  { type: typeof CLEAR_CART };
 
 // state
 
 interface State {
   user: User | null;
+  shoppingCart: CartEntry[];
 }
 
 const initialState: State = {
-  user: null
+  user: null,
+  shoppingCart: []
 };
 
 // reducer
@@ -29,6 +36,12 @@ const reducer: React.Reducer<State, Action> = (state, action) => {
 
     case LOGGED_OUT:
       return { ...state, user: null };
+
+    case MERGE_CART:
+      return { ...state, shoppingCart: mergeCart(state.shoppingCart, action.cart) };
+
+    case CLEAR_CART:
+      return { ...state, shoppingCart: [] };
 
     default:
       return state;
