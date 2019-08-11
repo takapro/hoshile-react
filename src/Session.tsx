@@ -7,7 +7,7 @@ export const LOGGED_IN: 'LOGGED_IN' = 'LOGGED_IN';
 export const LOGGED_OUT: 'LOGGED_OUT' = 'LOGGED_OUT';
 
 type Action =
-  { type: typeof LOGGED_IN, userId: number, userName: string } |
+  { type: typeof LOGGED_IN, userId: number | string, userName: string } |
   { type: typeof LOGGED_OUT };
 
 // state
