@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { History } from 'history';
+import { Location, History } from 'history';
 import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
 import { USER_API } from '../config';
 import { useSessionDispatch, LOGGED_IN } from '../Session';
@@ -9,7 +9,8 @@ import { valueHandler } from '../util/valueHandler';
 import { fetchUrl } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 
-const UserSignup: React.FC<{ history: History }> = ({ history }) => {
+const UserSignup: React.FC<{ location: Location, history: History }> = ({ location, history }) => {
+  const forPurchase = new URLSearchParams(location.search).get('forPurchase') === 'true';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password1, setPassword1] = useState('');
@@ -24,7 +25,7 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
     if (signupState.started) {
       return fetchUrl('POST', USER_API, { name, email, password: password1 }, setFetchResult(signupDispatch, (userId: number) => {
         sessionDispatch({ type: LOGGED_IN, userId, userName: name });
-        history.push('/');
+        history.push(forPurchase ? '/shoppingCart' : '/');
       }));
     }
   }, [signupState.started]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -34,7 +35,7 @@ const UserSignup: React.FC<{ history: History }> = ({ history }) => {
       <Container>
         <Row className='justify-content-center'>
           <Col md={6}>
-            <h3 className='mb-3'>Please Sign up, or <Link to='/login'>Log in</Link></h3>
+            <h3 className='mb-3'>Please Sign up, or <Link to={'/login' + (forPurchase ? '?forPurchase=true' : '')}>Log in</Link></h3>
             {
               signupState.failed && <Alert variant='danger'>Signup failed.</Alert>
             }

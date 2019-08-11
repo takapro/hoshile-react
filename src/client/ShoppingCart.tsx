@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { History } from 'history';
 import { Container, Table, Image, Button, Spinner } from 'react-bootstrap';
 import { PRODUCT_API, ORDER_API } from '../config';
-import { useSessionState, useSessionDispatch, MERGE_CART } from '../Session';
+import { useSessionState, useSessionDispatch, MERGE_CART, CLEAR_CART } from '../Session';
 import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
@@ -16,8 +16,9 @@ const CartRow: React.FC<{ detail: DetailEntry }> = ({ detail }) => {
   const sessionDispatch = useSessionDispatch();
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const updateQuantity = (quantity: number) => () =>
+  const updateQuantity = (quantity: number) => () => {
     sessionDispatch({ type: MERGE_CART, cart: [{ productId: product.id, quantity }] });
+  };
 
   return (
     <tr>
@@ -70,9 +71,10 @@ const ShoppingCart: React.FC<{ history: History }> = ({ history }) => {
   const { user, shoppingCart } = useSessionState();
   const [products, setProducts] = useState(LOADING as FetchState<Product[]>);
   const [purchaseState, purchaseDispatch] = useFetchReducer();
+  const sessionDispatch = useSessionDispatch();
 
   const disabled = user !== null && shoppingCart.length === 0;
-  const onClick = user ? () => purchaseDispatch(START) : () => history.push('/login');
+  const onClick = user ? () => purchaseDispatch(START) : () => history.push('/login?forPurchase=true');
 
   useEffect(() => documentTitle('Shopping Cart'), []);
   useEffect(() => {
@@ -83,6 +85,7 @@ const ShoppingCart: React.FC<{ history: History }> = ({ history }) => {
     if (user && purchaseState.started) {
       const body = { userId: user.id, details: shoppingCart };
       return fetchUrl('POST', ORDER_API, body, setFetchResult(purchaseDispatch, (orderId: number) => {
+        sessionDispatch({ type: CLEAR_CART });
         history.push('/order/' + orderId);
       }));
     }

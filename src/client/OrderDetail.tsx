@@ -72,7 +72,7 @@ const OrderDetail: React.FC<{ match: match<{ id: string }> }> = ({ match }) => {
         {
           fetchCase(user ? order : FAILED, order => (
             <>
-              <h3 className='mb-3'>Shopping Cart</h3>
+              <h3 className='mb-3'>Order Detail</h3>
               <p className='mb-3'>Date: {order.createDate}</p>
               <DetailTable details={order.details} />
             </>

@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { History } from 'history';
+import { Location, History } from 'history';
 import { Container, Row, Col, Alert, Form, Button, Spinner } from 'react-bootstrap';
 import { USER_API } from '../config';
-import { useSessionDispatch, LOGGED_IN } from '../Session';
+import { useSessionDispatch, LOGGED_IN, MERGE_CART } from '../Session';
 import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
 import { fetchUrl } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import User from '../entity/User';
 
-const UserLogin: React.FC<{ history: History }> = ({ history }) => {
+const UserLogin: React.FC<{ location: Location, history: History }> = ({ location, history }) => {
+  const forPurchase = new URLSearchParams(location.search).get('forPurchase') === 'true';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginState, loginDispatch] = useFetchReducer();
@@ -23,7 +24,9 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
     if (loginState.started) {
       return fetchUrl('GET', USER_API, { email, password }, setFetchResult(loginDispatch, (user: User) => {
         sessionDispatch({ type: LOGGED_IN, userId: user.id, userName: user.name });
-        history.push('/');
+        const cart = user.shoppingCart && JSON.parse(user.shoppingCart);
+        sessionDispatch({ type: MERGE_CART, cart: Array.isArray(cart) ? cart : [] });
+        history.push(forPurchase ? '/shoppingCart' : '/');
       }));
     }
   }, [loginState.started]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -33,7 +36,7 @@ const UserLogin: React.FC<{ history: History }> = ({ history }) => {
       <Container>
         <Row className='justify-content-center'>
           <Col md={6}>
-            <h3 className='mb-3'>Please Log in, or <Link to='/signup'>Sign up</Link></h3>
+            <h3 className='mb-3'>Please Log in, or <Link to={'/signup' + (forPurchase ? '?forPurchase=true' : '')}>Sign up</Link></h3>
             {
               loginState.failed && <Alert variant='danger'>Login failed.</Alert>
             }

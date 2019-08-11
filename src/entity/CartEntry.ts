@@ -1,8 +1,13 @@
 import Product from './Product';
 
 export interface CartEntry {
-  productId: number | string;
+  productId: number;
   quantity: number;
+}
+
+export interface LooseEntry {
+  productId: number | string;
+  quantity: number | string;
 }
 
 export interface DetailEntry {
@@ -10,14 +15,18 @@ export interface DetailEntry {
   quantity: number | string;
 }
 
-export const mergeCart = (cart1: CartEntry[], cart2: CartEntry[]): CartEntry[] => {
+export const mergeCart = (cart1: CartEntry[], cart2: LooseEntry[]): CartEntry[] => {
   const cart = [...cart1];
   cart2.forEach(entry => {
-    const index = cart.findIndex(e => e.productId === entry.productId);
-    if (index >= 0) {
-      cart[index] = { productId: cart[index].productId, quantity: cart[index].quantity + entry.quantity };
-    } else {
-      cart.push(entry);
+    if (entry.productId && entry.quantity) {
+      const productId = parseInt(entry.productId as string);
+      const quantity = parseInt(entry.quantity as string);
+      const index = cart.findIndex(e => e.productId === productId);
+      if (index >= 0) {
+        cart[index] = { productId, quantity: cart[index].quantity + quantity };
+      } else {
+        cart.push({ productId, quantity });
+      }
     }
   });
   return cart.filter(entry => entry.quantity > 0);
@@ -26,7 +35,7 @@ export const mergeCart = (cart1: CartEntry[], cart2: CartEntry[]): CartEntry[] =
 export const joinProducts = (cart: CartEntry[], products: Product[]): DetailEntry[] => {
   const result: DetailEntry[] = [];
   cart.forEach(entry => {
-    const product = products.find(product => product.id === entry.productId);
+    const product = products.find(product => parseInt(product.id as string) === entry.productId);
     if (product) {
       result.push({ product, quantity: entry.quantity });
     }

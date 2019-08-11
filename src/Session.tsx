@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useReducer } from 'react';
+import { USER_API } from './config';
+import { fetchUrl } from './util/fetchUrl';
 import User from './entity/User';
-import { CartEntry, mergeCart } from './entity/CartEntry';
+import { CartEntry, LooseEntry, mergeCart } from './entity/CartEntry';
 
 // action
 
@@ -12,7 +14,7 @@ export const CLEAR_CART: 'CLEAR_CART' = 'CLEAR_CART';
 type Action =
   { type: typeof LOGGED_IN, userId: number | string, userName: string } |
   { type: typeof LOGGED_OUT } |
-  { type: typeof MERGE_CART, cart: CartEntry[] } |
+  { type: typeof MERGE_CART, cart: LooseEntry[] } |
   { type: typeof CLEAR_CART };
 
 // state
@@ -27,6 +29,14 @@ const initialState: State = {
   shoppingCart: []
 };
 
+// middleware (?)
+
+const updateShoppingCart = (user: User | null, shoppingCart: CartEntry[]): void => {
+  if (user) {
+    fetchUrl('PUT', USER_API, { id: user.id, shoppingCart: JSON.stringify(shoppingCart) }, state => {});
+  }
+};
+
 // reducer
 
 const reducer: React.Reducer<State, Action> = (state, action) => {
@@ -38,9 +48,12 @@ const reducer: React.Reducer<State, Action> = (state, action) => {
       return { ...state, user: null };
 
     case MERGE_CART:
-      return { ...state, shoppingCart: mergeCart(state.shoppingCart, action.cart) };
+      const shoppingCart = mergeCart(state.shoppingCart, action.cart);
+      updateShoppingCart(state.user, shoppingCart);
+      return { ...state, shoppingCart };
 
     case CLEAR_CART:
+      updateShoppingCart(state.user, []);
       return { ...state, shoppingCart: [] };
 
     default:

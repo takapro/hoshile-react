@@ -3,7 +3,7 @@ import { withRouter, Link, NavLink } from 'react-router-dom';
 import { History } from 'history';
 import { Container, Navbar, Nav, NavDropdown, Button } from 'react-bootstrap';
 import { SITE_NAME } from '../config';
-import { useSessionState, useSessionDispatch, LOGGED_OUT } from '../Session';
+import { useSessionState, useSessionDispatch, LOGGED_OUT, CLEAR_CART } from '../Session';
 
 const Header: React.FC<{ history: History }> = ({ history }) => {
   const { user, shoppingCart } = useSessionState();
@@ -11,6 +11,7 @@ const Header: React.FC<{ history: History }> = ({ history }) => {
 
   const logout = (): void => {
     sessionDispatch({ type: LOGGED_OUT });
+    sessionDispatch({ type: CLEAR_CART });
     history.push('/');
   };
 
