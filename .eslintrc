@@ -4,6 +4,9 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended"
   ],
+  "plugins": [
+    "react-hooks"
+  ],
   "settings": {
     "react": {
       "version": "detect"
