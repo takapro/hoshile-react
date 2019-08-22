@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Container, Image } from 'react-bootstrap';
 import { documentTitle } from '../util/documentTitle';
-import ClassDiagram from '../img/ClassDiagram.png';
 
 const About: React.FC = () => {
   useEffect(() => documentTitle('About'), []);
@@ -25,7 +24,7 @@ const About: React.FC = () => {
           <li>Authentication for User</li>
         </ul>
         <p>Store Front page / Admin page</p>
-        <p><Image src={ClassDiagram} alt='Class Diagram' fluid /></p>
+        <p><Image src='img/ClassDiagram.png' alt='Class Diagram' fluid /></p>
       </Container>
     </main>
   );
