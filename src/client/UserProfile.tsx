@@ -22,8 +22,8 @@ const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
     if (profileState.started) {
-      return fetchUrl('PUT', USER_API, { id: user.id, name, email }, setFetchResult(profileDispatch, (result: boolean) => {
-        sessionDispatch({ type: LOGGED_IN, userId: user.id, userName: name });
+      return fetchUrl('PUT', USER_API, { id: user.id, name, email }, setFetchResult(profileDispatch, (user: User) => {
+        sessionDispatch({ type: LOGGED_IN, user });
         history.push('/');
       }));
     }
@@ -66,7 +66,7 @@ const PasswordForm: React.FC<{ history: History, user: User }> = ({ history, use
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
     if (passwordState.started) {
-      return fetchUrl('PUT', USER_API, { id: user.id, curPassword, newPassword: password1 }, setFetchResult(passwordDispatch, (result: boolean) => {
+      return fetchUrl('PUT', USER_API, { id: user.id, curPassword, newPassword: password1 }, setFetchResult(passwordDispatch, (user: User) => {
         history.push('/');
       }));
     }

@@ -12,7 +12,7 @@ export interface LooseEntry {
 
 export interface DetailEntry {
   product: Product;
-  quantity: number | string;
+  quantity: number;
 }
 
 export const mergeCart = (cart1: CartEntry[], cart2: LooseEntry[]): CartEntry[] => {
@@ -35,7 +35,7 @@ export const mergeCart = (cart1: CartEntry[], cart2: LooseEntry[]): CartEntry[] 
 export const joinProducts = (cart: CartEntry[], products: Product[]): DetailEntry[] => {
   const result: DetailEntry[] = [];
   cart.forEach(entry => {
-    const product = products.find(product => parseInt(product.id as string) === entry.productId);
+    const product = products.find(product => product.id === entry.productId);
     if (product) {
       result.push({ product, quantity: entry.quantity });
     }
@@ -44,7 +44,7 @@ export const joinProducts = (cart: CartEntry[], products: Product[]): DetailEntr
 };
 
 export const calcPrice = (detail: DetailEntry): number => {
-  return parseFloat(detail.product.price as string) * parseInt(detail.quantity as string);
+  return detail.product.price * detail.quantity;
 };
 
 export const calcTotalPrice = (details: DetailEntry[]): number => {
