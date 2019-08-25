@@ -1,5 +1,5 @@
 interface User {
-  id: number;
+  session: string;
   name: string;
   email: string;
   password: string;

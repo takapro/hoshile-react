@@ -24,7 +24,8 @@ const UserSignup: React.FC<{ location: Location, history: History }> = ({ locati
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
     if (signupState.started) {
-      return fetchUrl('POST', USER_API, { name, email, password: password1 }, setFetchResult(signupDispatch, (user: User) => {
+      const body = { name, email, password: password1 };
+      return fetchUrl('POST', USER_API + '/signup', null, body, setFetchResult(signupDispatch, (user: User) => {
         sessionDispatch({ type: LOGGED_IN, user });
         history.push(forPurchase ? '/shoppingCart' : '/');
       }));
