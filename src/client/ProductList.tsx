@@ -30,7 +30,7 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState(LOADING as FetchState<Product[]>);
 
   useEffect(() => documentTitle(), []);
-  useEffect(() => fetchUrl('GET', PRODUCT_API, null, setProducts), []);
+  useEffect(() => fetchUrl('GET', PRODUCT_API, null, null, setProducts), []);
 
   return (
     <main className='py-4'>

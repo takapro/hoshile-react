@@ -8,6 +8,7 @@ import { documentTitle } from '../util/documentTitle';
 import { valueHandler } from '../util/valueHandler';
 import { fetchUrl } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
+import User from '../entity/User';
 
 const UserSignup: React.FC<{ location: Location, history: History }> = ({ location, history }) => {
   const forPurchase = new URLSearchParams(location.search).get('forPurchase') === 'true';
@@ -23,8 +24,9 @@ const UserSignup: React.FC<{ location: Location, history: History }> = ({ locati
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
     if (signupState.started) {
-      return fetchUrl('POST', USER_API, { name, email, password: password1 }, setFetchResult(signupDispatch, (userId: number) => {
-        sessionDispatch({ type: LOGGED_IN, userId, userName: name });
+      const body = { name, email, password: password1 };
+      return fetchUrl('POST', USER_API + '/signup', null, body, setFetchResult(signupDispatch, (user: User) => {
+        sessionDispatch({ type: LOGGED_IN, user });
         history.push(forPurchase ? '/shoppingCart' : '/');
       }));
     }

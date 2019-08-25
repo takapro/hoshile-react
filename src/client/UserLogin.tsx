@@ -22,8 +22,9 @@ const UserLogin: React.FC<{ location: Location, history: History }> = ({ locatio
   useEffect(() => documentTitle('Log in'), []);
   useEffect(() => {
     if (loginState.started) {
-      return fetchUrl('GET', USER_API, { email, password }, setFetchResult(loginDispatch, (user: User) => {
-        sessionDispatch({ type: LOGGED_IN, userId: user.id, userName: user.name });
+      const body = { email, password };
+      return fetchUrl('POST', USER_API + '/login', null, body, setFetchResult(loginDispatch, (user: User) => {
+        sessionDispatch({ type: LOGGED_IN, user });
         const cart = user.shoppingCart && JSON.parse(user.shoppingCart);
         sessionDispatch({ type: MERGE_CART, cart: Array.isArray(cart) ? cart : [] });
         history.push(forPurchase ? '/shoppingCart' : '/');

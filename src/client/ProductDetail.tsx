@@ -14,7 +14,7 @@ const ProductDetail: React.FC<{ match: match<{ id: string }>, history: History }
   const [product, setProduct] = useState(LOADING as FetchState<Product>);
 
   useEffect(() => fetchCase(product, product => documentTitle(product.name)), [product]);
-  useEffect(() => fetchUrl('GET', PRODUCT_API, { id: match.params.id }, setProduct), [match.params.id]);
+  useEffect(() => fetchUrl('GET', PRODUCT_API + '/' + match.params.id, null, null, setProduct), [match.params.id]);
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const addToCart = (product: Product) => () => {

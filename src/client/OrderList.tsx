@@ -42,7 +42,7 @@ const OrderList: React.FC<{ history: History }> = ({ history }) => {
   useEffect(() => documentTitle('Order Detail'), []);
   useEffect(() => {
     if (user) {
-      return fetchUrl('GET', ORDER_API, { userId: user.id }, setOrders);
+      return fetchUrl('GET', ORDER_API, user.session, null, setOrders);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

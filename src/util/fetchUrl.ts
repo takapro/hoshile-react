@@ -5,6 +5,7 @@ export type FetchState<T> = typeof LOADING | typeof FAILED | T;
 export const fetchUrl = <T>(
   method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   url: string,
+  session: string | null,
   body: { [key: string]: any } | null, // eslint-disable-line @typescript-eslint/no-explicit-any
   setState: (state: typeof FAILED | T) => void
 ): () => void => {
@@ -13,12 +14,22 @@ export const fetchUrl = <T>(
     if (body) {
       url += '?' + Object.keys(body).map(key => key + '=' + encodeURIComponent(body[key])).join('&');
     }
+    if (session) {
+      init = {
+        method,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + session
+        }
+      };
+    }
   } else {
     init = {
       method,
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        ...(session ? { 'Authorization': 'Bearer ' + session } : {})
       },
       body: JSON.stringify(body)
     };

@@ -22,8 +22,9 @@ const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
     if (profileState.started) {
-      return fetchUrl('PUT', USER_API, { id: user.id, name, email }, setFetchResult(profileDispatch, (result: boolean) => {
-        sessionDispatch({ type: LOGGED_IN, userId: user.id, userName: name });
+      const body = { name, email };
+      return fetchUrl('PUT', USER_API + '/profile', user.session, body, setFetchResult(profileDispatch, (user: User) => {
+        sessionDispatch({ type: LOGGED_IN, user });
         history.push('/');
       }));
     }
@@ -66,7 +67,8 @@ const PasswordForm: React.FC<{ history: History, user: User }> = ({ history, use
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
     if (passwordState.started) {
-      return fetchUrl('PUT', USER_API, { id: user.id, curPassword, newPassword: password1 }, setFetchResult(passwordDispatch, (result: boolean) => {
+      const body = { curPassword, newPassword: password1 };
+      return fetchUrl('PUT', USER_API + '/password', user.session, body, setFetchResult(passwordDispatch, (user: User) => {
         history.push('/');
       }));
     }
@@ -109,9 +111,9 @@ const UserProfile: React.FC<{ history: History }> = ({ history }) => {
   useEffect(() => documentTitle('Profile'), []);
   useEffect(() => {
     if (session.user) {
-      return fetchUrl('GET', USER_API, { id: session.user.id }, setUser);
+      return fetchUrl('GET', USER_API + '/profile', session.user.session, null, setUser);
     }
-  }, [session.user && session.user.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [session.user && session.user.session]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main className='py-4'>

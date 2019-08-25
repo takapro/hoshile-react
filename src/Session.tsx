@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer } from 'react';
 import { USER_API } from './config';
 import { fetchUrl } from './util/fetchUrl';
 import User from './entity/User';
-import { CartEntry, LooseEntry, mergeCart } from './entity/CartEntry';
+import { CartEntry, mergeCart } from './entity/CartEntry';
 
 // action
 
@@ -12,9 +12,9 @@ export const MERGE_CART: 'MERGE_CART' = 'MERGE_CART';
 export const CLEAR_CART: 'CLEAR_CART' = 'CLEAR_CART';
 
 type Action =
-  { type: typeof LOGGED_IN, userId: number | string, userName: string } |
+  { type: typeof LOGGED_IN, user: User } |
   { type: typeof LOGGED_OUT } |
-  { type: typeof MERGE_CART, cart: LooseEntry[] } |
+  { type: typeof MERGE_CART, cart: CartEntry[] } |
   { type: typeof CLEAR_CART };
 
 // state
@@ -33,7 +33,8 @@ const initialState: State = {
 
 const updateShoppingCart = (user: User | null, shoppingCart: CartEntry[]): void => {
   if (user) {
-    fetchUrl('PUT', USER_API, { id: user.id, shoppingCart: JSON.stringify(shoppingCart) }, state => {});
+    const body = { shoppingCart: JSON.stringify(shoppingCart) };
+    fetchUrl('PUT', USER_API + '/shoppingCart', user.session, body, state => {});
   }
 };
 
@@ -42,7 +43,7 @@ const updateShoppingCart = (user: User | null, shoppingCart: CartEntry[]): void 
 const reducer: React.Reducer<State, Action> = (state, action) => {
   switch (action.type) {
     case LOGGED_IN:
-      return { ...state, user: { id: action.userId, name: action.userName } };
+      return { ...state, user: action.user };
 
     case LOGGED_OUT:
       return { ...state, user: null };

@@ -79,12 +79,11 @@ const ShoppingCart: React.FC<{ history: History }> = ({ history }) => {
   useEffect(() => documentTitle('Shopping Cart'), []);
   useEffect(() => {
     const ids = shoppingCart.map(entry => entry.productId).join(',');
-    fetchUrl('GET', PRODUCT_API, { ids }, setProducts);
+    fetchUrl('GET', PRODUCT_API, null, { ids }, setProducts);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (user && purchaseState.started) {
-      const body = { userId: user.id, details: shoppingCart };
-      return fetchUrl('POST', ORDER_API, body, setFetchResult(purchaseDispatch, (orderId: number) => {
+      return fetchUrl('POST', ORDER_API, user.session, shoppingCart, setFetchResult(purchaseDispatch, (orderId: number) => {
         sessionDispatch({ type: CLEAR_CART });
         history.push('/order/' + orderId);
       }));

@@ -62,7 +62,7 @@ const OrderDetail: React.FC<{ match: match<{ id: string }> }> = ({ match }) => {
   useEffect(() => documentTitle('Order Detail'), []);
   useEffect(() => {
     if (user) {
-      return fetchUrl('GET', ORDER_API, { id: match.params.id }, setOrder);
+      return fetchUrl('GET', ORDER_API + '/' + match.params.id, user.session, null, setOrder);
     }
   }, [match.params.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
