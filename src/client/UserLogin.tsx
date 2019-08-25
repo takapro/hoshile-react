@@ -18,6 +18,10 @@ const UserLogin: React.FC<{ location: Location, history: History }> = ({ locatio
   const sessionDispatch = useSessionDispatch();
 
   const loginDisabled = loginState.started || email === '' || password === '';
+  const submitLogin = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    e.preventDefault();
+    loginDispatch(START);
+  };
 
   useEffect(() => documentTitle('Log in'), []);
   useEffect(() => {
@@ -50,7 +54,7 @@ const UserLogin: React.FC<{ location: Location, history: History }> = ({ locatio
                 <Form.Label>Password</Form.Label>
                 <Form.Control type='password' value={password} onChange={valueHandler(setPassword)} />
               </Form.Group>
-              <Button type='submit' variant='primary' disabled={loginDisabled} onClick={() => loginDispatch(START)}>
+              <Button type='submit' variant='primary' disabled={loginDisabled} onClick={submitLogin}>
                 {
                   loginState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
                 }

@@ -18,6 +18,10 @@ const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user
   const sessionDispatch = useSessionDispatch();
 
   const profileDisabled = profileState.started || name === '' || email === '';
+  const submitProfile = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    e.preventDefault();
+    profileDispatch(START);
+  };
 
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
@@ -45,7 +49,7 @@ const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user
           <Form.Label>Email</Form.Label>
           <Form.Control type='email' value={email} onChange={valueHandler(setEmail)} />
         </Form.Group>
-        <Button type='submit' variant='primary' disabled={profileDisabled} onClick={() => profileDispatch(START)}>
+        <Button type='submit' variant='primary' disabled={profileDisabled} onClick={submitProfile}>
           {
             profileState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
           }
@@ -63,6 +67,10 @@ const PasswordForm: React.FC<{ history: History, user: User }> = ({ history, use
   const [passwordState, passwordDispatch] = useFetchReducer();
 
   const passwordDisabled = passwordState.started || curPassword === '' || password1 === '' || password1 !== password2;
+  const submitPassword = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    e.preventDefault();
+    passwordDispatch(START);
+  };
 
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
@@ -93,7 +101,7 @@ const PasswordForm: React.FC<{ history: History, user: User }> = ({ history, use
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control type='password' value={password2} onChange={valueHandler(setPassword2)} />
         </Form.Group>
-        <Button type='submit' variant='primary' disabled={passwordDisabled} onClick={() => passwordDispatch(START)}>
+        <Button type='submit' variant='primary' disabled={passwordDisabled} onClick={submitPassword}>
           {
             passwordState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
           }

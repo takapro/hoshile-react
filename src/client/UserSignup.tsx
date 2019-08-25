@@ -20,6 +20,10 @@ const UserSignup: React.FC<{ location: Location, history: History }> = ({ locati
   const sessionDispatch = useSessionDispatch();
 
   const signupDisabled = signupState.started || name === '' || email === '' || password1 === '' || password1 !== password2;
+  const submitSignup = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    e.preventDefault();
+    signupDispatch(START);
+  };
 
   useEffect(() => documentTitle('Sign up'), []);
   useEffect(() => {
@@ -58,7 +62,7 @@ const UserSignup: React.FC<{ location: Location, history: History }> = ({ locati
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control type='password' value={password2} onChange={valueHandler(setPassword2)} />
               </Form.Group>
-              <Button type='submit' variant='primary' disabled={signupDisabled} onClick={() => signupDispatch(START)}>
+              <Button type='submit' variant='primary' disabled={signupDisabled} onClick={submitSignup}>
                 {
                   signupState.started && <Spinner as='span' className='mr-2' animation='border' size='sm' />
                 }
