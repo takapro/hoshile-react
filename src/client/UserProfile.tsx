@@ -27,7 +27,7 @@ const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user
   useEffect(() => {
     if (profileState.started) {
       const body = { name, email };
-      return fetchUrl('PUT', USER_API + '/profile', user.session, body, setFetchResult(profileDispatch, (user: User) => {
+      return fetchUrl('PUT', USER_API + '/profile', user.token, body, setFetchResult(profileDispatch, (user: User) => {
         sessionDispatch({ type: LOGGED_IN, user });
         history.push('/');
       }));
@@ -76,7 +76,7 @@ const PasswordForm: React.FC<{ history: History, user: User }> = ({ history, use
   useEffect(() => {
     if (passwordState.started) {
       const body = { curPassword, newPassword: password1 };
-      return fetchUrl('PUT', USER_API + '/password', user.session, body, setFetchResult(passwordDispatch, (user: User) => {
+      return fetchUrl('PUT', USER_API + '/password', user.token, body, setFetchResult(passwordDispatch, (user: User) => {
         history.push('/');
       }));
     }
@@ -119,9 +119,9 @@ const UserProfile: React.FC<{ history: History }> = ({ history }) => {
   useEffect(() => documentTitle('Profile'), []);
   useEffect(() => {
     if (session.user) {
-      return fetchUrl('GET', USER_API + '/profile', session.user.session, null, setUser);
+      return fetchUrl('GET', USER_API + '/profile', session.user.token, null, setUser);
     }
-  }, [session.user && session.user.session]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [session.user && session.user.token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <main className='py-4'>

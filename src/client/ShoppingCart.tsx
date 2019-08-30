@@ -83,7 +83,7 @@ const ShoppingCart: React.FC<{ history: History }> = ({ history }) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (user && purchaseState.started) {
-      return fetchUrl('POST', ORDER_API, user.session, shoppingCart, setFetchResult(purchaseDispatch, (orderId: number) => {
+      return fetchUrl('POST', ORDER_API, user.token, shoppingCart, setFetchResult(purchaseDispatch, (orderId: number) => {
         sessionDispatch({ type: CLEAR_CART });
         history.push('/order/' + orderId);
       }));

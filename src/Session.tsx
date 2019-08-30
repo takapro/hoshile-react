@@ -34,7 +34,7 @@ const initialState: State = {
 const updateShoppingCart = (user: User | null, shoppingCart: CartEntry[]): void => {
   if (user) {
     const body = { shoppingCart: JSON.stringify(shoppingCart) };
-    fetchUrl('PUT', USER_API + '/shoppingCart', user.session, body, state => {});
+    fetchUrl('PUT', USER_API + '/shoppingCart', user.token, body, state => {});
   }
 };
 
