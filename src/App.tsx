@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BASE_PATH } from './config';
 import { SessionProvider } from './Session';
 import Header from './client/Header';
 import AlertPage from './client/AlertPage';
@@ -50,7 +51,7 @@ const ClientPage: React.FC = () => {
 const App: React.FC = () => {
   return (
     <SessionProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={BASE_PATH}>
         <Switch>
           <Route path='/admin' component={AdminPage} />
           <Route component={ClientPage} />
