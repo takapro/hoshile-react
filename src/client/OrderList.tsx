@@ -39,7 +39,7 @@ const OrderList: React.FC<{ history: History }> = ({ history }) => {
   const { user } = useSessionState();
   const [orders, setOrders] = useState(LOADING as FetchState<OrderHead[]>);
 
-  useEffect(() => documentTitle('Order Detail'), []);
+  useEffect(() => documentTitle('Order List'), []);
   useEffect(() => {
     if (user) {
       return fetchUrl('GET', ORDER_API, user.token, null, setOrders);

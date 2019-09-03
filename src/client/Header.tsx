@@ -19,7 +19,7 @@ const Header: React.FC<{ history: History }> = ({ history }) => {
     <>
       <header className='py-4'>
         <Container className='text-center'>
-          <h1><Link to='/'>{SITE_NAME}</Link></h1>
+          <h1><Link to='/'>{SITE_NAME + ' (React)'}</Link></h1>
         </Container>
       </header>
       <Navbar expand='md' variant='dark' bg='dark' sticky='top'>
