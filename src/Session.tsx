@@ -6,10 +6,10 @@ import { CartEntry, mergeCart } from './entity/CartEntry';
 
 // action
 
-export const LOGGED_IN: 'LOGGED_IN' = 'LOGGED_IN';
-export const LOGGED_OUT: 'LOGGED_OUT' = 'LOGGED_OUT';
-export const MERGE_CART: 'MERGE_CART' = 'MERGE_CART';
-export const CLEAR_CART: 'CLEAR_CART' = 'CLEAR_CART';
+export const LOGGED_IN = 'LOGGED_IN';
+export const LOGGED_OUT = 'LOGGED_OUT';
+export const MERGE_CART = 'MERGE_CART';
+export const CLEAR_CART = 'CLEAR_CART';
 
 type Action =
   { type: typeof LOGGED_IN, user: User } |

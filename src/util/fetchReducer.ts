@@ -1,8 +1,8 @@
 import React, { useReducer } from 'react';
 import { FAILED } from './fetchUrl';
 
-export const START: 'START' = 'START';
-const SUCCEEDED: 'SUCCEEDED' = 'SUCCEEDED';
+export const START = 'START';
+const SUCCEEDED = 'SUCCEEDED';
 type FetchAction = typeof START | typeof FAILED | typeof SUCCEEDED;
 
 export interface FetchControl {

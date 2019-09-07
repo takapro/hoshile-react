@@ -1,5 +1,5 @@
-export const LOADING: 'LOADING' = 'LOADING';
-export const FAILED: 'FAILED' = 'FAILED';
+export const LOADING = 'LOADING';
+export const FAILED = 'FAILED';
 export type FetchState<T> = typeof LOADING | typeof FAILED | T;
 
 export const fetchUrl = <T>(
