@@ -9,7 +9,7 @@ import { valueHandler } from '../util/valueHandler';
 import { fetchUrl, fetchCase, FetchState, LOADING, FAILED } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import User from '../entity/User';
-import FetchAlert from './FetchAlert';
+import FetchAlert from '../view/FetchAlert';
 
 const ProfileForm: React.FC<{ history: History, user: User }> = ({ history, user }) => {
   const [name, setName] = useState(user.name);

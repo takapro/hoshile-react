@@ -9,7 +9,7 @@ import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
 import { useFetchReducer, setFetchResult, START } from '../util/fetchReducer';
 import { DetailEntry, joinProducts, calcPrice, calcTotalPrice } from '../entity/CartEntry';
 import Product from '../entity/Product';
-import FetchAlert from './FetchAlert';
+import FetchAlert from '../view/FetchAlert';
 
 const CartRow: React.FC<{ detail: DetailEntry }> = ({ detail }) => {
   const { product, quantity } = detail;

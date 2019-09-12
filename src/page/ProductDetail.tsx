@@ -7,7 +7,7 @@ import { useSessionDispatch, MERGE_CART } from '../Session';
 import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
 import Product from '../entity/Product';
-import FetchAlert from './FetchAlert';
+import FetchAlert from '../view/FetchAlert';
 
 const ProductDetail: React.FC<{ match: match<{ id: string }>, history: History }> = ({ match, history }) => {
   const sessionDispatch = useSessionDispatch();

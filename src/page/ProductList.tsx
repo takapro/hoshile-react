@@ -5,7 +5,7 @@ import { PRODUCT_API } from '../config';
 import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING } from '../util/fetchUrl';
 import Product from '../entity/Product';
-import FetchAlert from './FetchAlert';
+import FetchAlert from '../view/FetchAlert';
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   return (

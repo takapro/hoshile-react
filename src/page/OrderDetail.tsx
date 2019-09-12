@@ -7,7 +7,7 @@ import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING, FAILED } from '../util/fetchUrl';
 import { OrderHead, OrderDetail as OrderDetailEntity } from '../entity/Order';
 import { calcPrice, calcTotalPrice } from '../entity/CartEntry';
-import FetchAlert from './FetchAlert';
+import FetchAlert from '../view/FetchAlert';
 
 const DetailRow: React.FC<{ detail: OrderDetailEntity }> = ({ detail }) => {
   const { product, quantity } = detail;

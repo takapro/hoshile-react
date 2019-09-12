@@ -8,7 +8,7 @@ import { documentTitle } from '../util/documentTitle';
 import { fetchUrl, fetchCase, FetchState, LOADING, FAILED } from '../util/fetchUrl';
 import { OrderHead } from '../entity/Order';
 import { calcTotalPrice } from '../entity/CartEntry';
-import FetchAlert from './FetchAlert';
+import FetchAlert from '../view/FetchAlert';
 
 const OrderTable: React.FC<{ history: History, orders: OrderHead[] }> = ({ history, orders }) => {
   return (
