@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert, Spinner } from 'react-bootstrap';
 import { LOADING, FAILED } from '../util/fetchUrl';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const FetchAlert = (message: string) => (state: typeof LOADING | typeof FAILED) => {
   if (state === LOADING) {
     return (

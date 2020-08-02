@@ -23,10 +23,10 @@ const reducer = (state: FetchControl, action: FetchAction): FetchControl => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const setFetchResult = <T>(
   dispatch: React.Dispatch<FetchAction>,
   setResult: (result: T) => void
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 ) => (state: typeof FAILED | T) => {
   if (state === FAILED) {
     dispatch(FAILED);

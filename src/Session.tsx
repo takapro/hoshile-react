@@ -34,6 +34,7 @@ const initialState: State = {
 const updateShoppingCart = (user: User | null, shoppingCart: CartEntry[]): void => {
   if (user) {
     const body = { shoppingCart: JSON.stringify(shoppingCart) };
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     fetchUrl('PUT', USER_API + '/shoppingCart', user.token, body, state => {});
   }
 };
@@ -65,6 +66,7 @@ const reducer: React.Reducer<State, Action> = (state, action) => {
 // context
 
 const StateContext = createContext(initialState);
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 const DispatchContext = createContext((action: Action) => {});
 
 export const SessionProvider: React.FC = ({ children }) => {
