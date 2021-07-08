@@ -20,7 +20,8 @@ module.exports = (env, argv) => {
       ]
     },
     devServer: {
-      historyApiFallback: true
+      historyApiFallback: true,
+      static: [path.resolve(__dirname, 'public')]
     }
   };
 };
